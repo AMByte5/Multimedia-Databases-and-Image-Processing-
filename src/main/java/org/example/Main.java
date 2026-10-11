@@ -1,53 +1,184 @@
+
 package org.example;
 
-import org.example.operations.Attack;
+import org.example.operations.AdversarialPatchAttack;
+import org.example.operations.SquareAttack;
+import org.example.operations.SimBAAttack;
+import org.example.operations.PGDAttack;
+
+import java.io.File;
 
 public class Main {
 
     public static void main(String[] args) {
 
+        // =====================================
+        // ATTACK TRIGGERS
+        // =====================================
+
+        boolean useAdversarialPatch = true;
+        boolean useSquareAttack = false;
+        boolean useSimBAAttack = false;
+        boolean usePGDAttack = false;
+
+        // =====================================
+        // INPUT IMAGE
+        // =====================================
+
         String input =
-                "C:\\Users\\LapTop 1\\OneDrive\\Desktop\\iiiiii\\image10.jpg";
+                "C:\\Users\\LapTop 1\\OneDrive\\Desktop\\iiiiii\\image17.jpg";
 
-        String poisoned =
-                "C:\\Users\\LapTop 1\\OneDrive\\Desktop\\iiiiii\\poisoned_image.png";
+        // =====================================
+        // ATTACK PARAMETERS
+        // =====================================
 
-        String difference =
-                "C:\\Users\\LapTop 1\\OneDrive\\Desktop\\iiiiii\\difference_amplified.png";
-
-        /*
-         * Maximum perturbation:
-         *
-         * epsilon = 8/255
-         */
         int epsilon = 8;
-
-        /*
-         * Number of candidate modifications.
-         */
         int iterations = 2000;
 
-        Attack attack =
-                new Attack(
-                        epsilon,
-                        iterations
+        // =====================================
+        // GET ORIGINAL IMAGE NAME
+        // =====================================
+
+        File inputFile = new File(input);
+
+        String fileName = inputFile.getName();
+
+        int dotIndex = fileName.lastIndexOf('.');
+
+        String imageName = dotIndex > 0
+                ? fileName.substring(0, dotIndex)
+                : fileName;
+
+        String folder = inputFile.getParent();
+
+        // =====================================
+        // RUN ATTACKS
+        // =====================================
+
+        if (useAdversarialPatch) {
+
+            try {
+
+                String attackName = "AdversarialPatch";
+
+                String poisoned = new File(
+                        folder,
+                        imageName + "_" + attackName + ".png"
+                ).getPath();
+
+                String difference = new File(
+                        folder,
+                        imageName + "_" + attackName
+                                + "_difference.png"
+                ).getPath();
+
+                AdversarialPatchAttack attack =
+                        new AdversarialPatchAttack(
+                                epsilon, iterations
+                        );
+
+                attack.poisonImage(
+                        input, poisoned, difference
                 );
 
-        try {
-
-            attack.poisonImage(
-                    input,
-                    poisoned,
-                    difference
-            );
-
-        } catch (Exception e) {
-
-            System.err.println(
-                    "Attack failed:"
-            );
-
-            e.printStackTrace();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
+
+        if (useSquareAttack) {
+
+            try {
+
+                String attackName = "SquareAttack";
+
+                String poisoned = new File(
+                        folder,
+                        imageName + "_" + attackName + ".png"
+                ).getPath();
+
+                String difference = new File(
+                        folder,
+                        imageName + "_" + attackName
+                                + "_difference.png"
+                ).getPath();
+
+                SquareAttack attack =
+                        new SquareAttack(
+                                epsilon, iterations
+                        );
+
+                attack.poisonImage(
+                        input, poisoned, difference
+                );
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        if (useSimBAAttack) {
+
+            try {
+
+                String attackName = "SimBAAttack";
+
+                String poisoned = new File(
+                        folder,
+                        imageName + "_" + attackName + ".png"
+                ).getPath();
+
+                String difference = new File(
+                        folder,
+                        imageName + "_" + attackName
+                                + "_difference.png"
+                ).getPath();
+
+                SimBAAttack attack =
+                        new SimBAAttack(
+                                epsilon, iterations
+                        );
+
+                attack.poisonImage(
+                        input, poisoned, difference
+                );
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        if (usePGDAttack) {
+
+            try {
+
+                String attackName = "PGDAttack";
+
+                String poisoned = new File(
+                        folder,
+                        imageName + "_" + attackName + ".png"
+                ).getPath();
+
+                String difference = new File(
+                        folder,
+                        imageName + "_" + attackName
+                                + "_difference.png"
+                ).getPath();
+
+                PGDAttack attack =
+                        new PGDAttack(
+                                epsilon, iterations
+                        );
+
+                attack.poisonImage(
+                        input, poisoned, difference
+                );
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        System.out.println("Finished running enabled attacks.");
     }
 }
